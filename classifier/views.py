@@ -13,22 +13,22 @@ def index(request):
 
 def make_prediction(request):
     if request.method == 'POST' and request.FILES['image']:
-        # Resmi geçici bir dosyaya kaydet
+        # Save img to temporary file
         image_file = request.FILES['image']
         temp_file = tempfile.NamedTemporaryFile(delete=False)
         temp_file.write(image_file.read())
         temp_file.close()
 
-        # Modeli yükle
+        # Load model
         model: Sequential = load_model("model.h5")
         model.compile(optimizer="Adam", loss='categorical_crossentropy', metrics=['accuracy'])
 
-        # Görüntü ön işleme
+        # Image preprocessing
         img = utils.load_img(temp_file.name, target_size=(64, 64))
         img = utils.img_to_array(img)
         img = expand_dims(img, axis=0)
 
-        # Tahmini yap
+        # Make predictions
         pred = model.predict(img)
         textPrompt = f"{pred[0][0]:.4f} - "
         if int(round(pred[0][0])) == 1:
@@ -36,7 +36,7 @@ def make_prediction(request):
         else:
             textPrompt = "Wild Animal"
 
-        # Geçici dosyayı sil
+        # Delete the temp file
         os.remove(temp_file.name)
 
         return JsonResponse({'prediction': textPrompt})

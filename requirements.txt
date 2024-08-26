@@ -1,4 +1,5 @@
 django
 keras
-tensorflow
 numpy
+tensorflow
+pillow
