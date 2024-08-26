@@ -50,29 +50,69 @@
     <div class="container">
         <h1>Human and Wild Animal Classifier</h1>
         <p class="text">
-            Upload file below
+            Yunus Ege Küçük
         </p>
-        <img id="imagePreview" src="https://via.placeholder.com/300" alt="Image Preview">
-        <input type="file" id="imageUpload" accept="image/*">
+        
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <img id="imagePreview" src="https://via.placeholder.com/300" alt="Image Preview">
+            <input type="file" id="imageUpload" accept="image/*">
+        </form>
+        
         <div id="result">There goes the result</div>
     </div>
+    
 
     <script>
         const imageUpload = document.getElementById('imageUpload');
         const imagePreview = document.getElementById('imagePreview');
         const result = document.getElementById('result');
-
+    
         imageUpload.addEventListener('change', function() {
             const file = this.files[0];
             if (file) {
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     imagePreview.src = e.target.result;
-                    result.textContent = 'Yüklenen görüntü burada gösterilecek.';
-                }
+                    
+                    const formData = new FormData();
+                    formData.append('image', file);
+    
+                    fetch('/make_prediction/', {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'X-CSRFToken': getCookie('csrftoken')  // CSRF token
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        result.textContent = data.prediction;
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        result.textContent = 'An Error occured!';
+                    });
+                };
                 reader.readAsDataURL(file);
             }
         });
+    
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
     </script>
+    
 </body>
 </html>
