@@ -51,7 +51,7 @@ You can build the image on your own.
 
 3. Run the Docker container:
     ```bash
-    docker --name classifier run -p 80:8000 classifierimage
+    docker run --name classifier -p 80:8000 classifierimage
     ```
 4. Access the application by navigating to `http://127.0.0.1` in your web browser.
 
