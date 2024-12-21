@@ -21,7 +21,7 @@ You can download the image from DockerHub and run the application in a Docker co
 
 2. Run the Docker container:
     ```bash
-    docker run --name classifier -p 80:8000 yegekucuk2/classifier
+    docker run --name classifier -d -p 80:8000 yegekucuk2/classifier
     ```
 3. Access the application by navigating to `http://127.0.0.1` in your web browser.
 4. You can stop and remove the application with the following command:
@@ -51,7 +51,7 @@ You can build the image on your own.
 
 3. Run the Docker container:
     ```bash
-    docker run --name classifier -p 80:8000 classifierimage
+    docker run --name classifier -d -p 80:8000 classifierimage
     ```
 4. Access the application by navigating to `http://127.0.0.1` in your web browser.
 
